@@ -74,12 +74,12 @@ spec:
         targetPath: ./        # repo root
 
     # ✅ 3. Register in Backstage Catalog
-    - id: register
-      name: Register Existing Repo
-      action: catalog:register
-      input:
-        repoContentsUrl: ${{ steps['inject-ci-cd'].output.repoContentsUrl }}
-        catalogInfoPath: "/catalog-info.yaml"
+    # - id: register
+    #   name: Register Existing Repo
+    #   action: catalog:register
+    #   input:
+    #     repoContentsUrl: ${{ steps['inject-ci-cd'].output.repoContentsUrl }}
+    #     catalogInfoPath: "/catalog-info.yaml"
 
     # ✅ 4. Create GitOps PR (REUSE YOUR EXISTING LOGIC)
     - id: create-k8s-folder
