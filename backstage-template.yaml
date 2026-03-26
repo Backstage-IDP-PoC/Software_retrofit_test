@@ -27,7 +27,7 @@ spec:
           allowedHosts:
             - github.com
           allowedOwners:
-            - Backstage-GoldenImage
+            - BackstageSSPPoC
           # requestUserCredentials:
           #   secretsKey: USER_OAUTH_TOKEN
 
@@ -83,10 +83,10 @@ spec:
 
     # ✅ 4. Create GitOps PR (REUSE YOUR EXISTING LOGIC)
     - id: create-k8s-folder
-      name: Create K8s Artifact Folder
+      name: Create K8s Manifests Folder
       action: publish:github:pull-request
       input:
-        repoUrl: github.com?owner=Backstage-GoldenImage&repo=k8s-artifact
+        repoUrl: github.com?owner=BackstageSSPPoC&repo=k8s-manifests
         branchName: create-${{ parameters.component_id }}
         title: "Add artifact for ${{ parameters.component_id }}"
         description: "This PR creates Kubernetes artifact for ${{ parameters.component_id }}"
