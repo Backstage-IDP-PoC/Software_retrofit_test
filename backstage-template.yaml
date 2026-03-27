@@ -53,23 +53,26 @@ spec:
           app_name: ${{ parameters.component_id }}
           app_env: ${{ parameters.environment }}
 
-    # ✅ 2. DIRECT PUSH (NO PR)
+    # ✅ 2. PUSH TO EXISTING REPO
     - id: push-to-repo
-      name: Push CI/CD directly to repo
-      action: publish:github
+      name: Push CI/CD to existing repo
+      action: github:repo:push
       input:
         repoUrl: github.com?owner=Backstage-IDP-PoC&repo=${{ parameters.component_id }}
-        defaultBranch: main
+        branchName: main
+        commitMessage: "Add Jenkins + ArgoCD CI/CD via Backstage"
         sourcePath: ./
 
-    # ✅ 3. Create GitOps Manifests
+    # ✅ 3. Push K8s Manifests
     - id: push-k8s-manifest
       name: Push Kubernetes manifests
-      action: publish:github
+      action: github:repo:push
       input:
         repoUrl: github.com?owner=Backstage-IDP-PoC&repo=k8s-manifest
-        defaultBranch: main
+        branchName: main
+        commitMessage: "Add manifests for ${{ parameters.component_id }}"
         sourcePath: ./manifest-templates
+        targetPath: apps/${{ parameters.component_id }}
 
   output:
     links:
