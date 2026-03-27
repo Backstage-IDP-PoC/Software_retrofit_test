@@ -59,8 +59,8 @@ spec:
       action: github:repo:push
       input:
         repoUrl: github.com?owner=Backstage-IDP-PoC&repo=${{ parameters.component_id }}
-        branchName: main
-        commitMessage: "Add Jenkins + ArgoCD CI/CD via Backstage"
+        # branchName: main
+        # commitMessage: "Add Jenkins + ArgoCD CI/CD via Backstage"
         sourcePath: ./
 
     # ✅ 3. Push K8s Manifests
@@ -69,8 +69,8 @@ spec:
       action: github:repo:push
       input:
         repoUrl: github.com?owner=Backstage-IDP-PoC&repo=k8s-manifest
-        branchName: main
-        commitMessage: "Add manifests for ${{ parameters.component_id }}"
+        # branchName: main
+        # commitMessage: "Add manifests for ${{ parameters.component_id }}"
         sourcePath: ./manifest-templates
         targetPath: apps/${{ parameters.component_id }}
 
