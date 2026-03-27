@@ -3,8 +3,8 @@ kind: Template
 
 metadata:
   name: retrofit-jenkins-argocd
-  title: Inject CI/CD into Existing Repo
-  description: Inject Jenkins CI + ArgoCD deployment into an existing repository
+  title: Integrate CI/CD into Developer's Existing Repository
+  description: Integrate CI/CD into Developer's Existing Repository
 
 spec:
   owner: development
@@ -27,7 +27,7 @@ spec:
           allowedHosts:
             - github.com
           allowedOwners:
-            - BackstageSSPPoC
+            - Backstage-IDP-PoC
           # requestUserCredentials:
           #   secretsKey: USER_OAUTH_TOKEN
 
@@ -86,7 +86,7 @@ spec:
       name: Create K8s Manifests Folder
       action: publish:github:pull-request
       input:
-        repoUrl: github.com?owner=BackstageSSPPoC&repo=k8s-manifests
+        repoUrl: github.com?owner=Backstage-IDP-PoC&repo=k8s-manifests
         branchName: create-${{ parameters.component_id }}
         title: "Add artifact for ${{ parameters.component_id }}"
         description: "This PR creates Kubernetes artifact for ${{ parameters.component_id }}"
