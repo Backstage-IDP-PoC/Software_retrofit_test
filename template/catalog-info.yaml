@@ -13,6 +13,15 @@ metadata:
     backstage.io/kubernetes-id: ${{values.app_name}}
     backstage.io/kubernetes-namespace: default
 
+      links:
+    - url: http://35.208.92.122:8080/job/{{app_name}}/build
+      title: Trigger Build
+      icon: build
+
+    - url: https://35.184.124.65/applications/{{app_name}}
+      title: Open ArgoCD
+      icon: dashboard
+
 spec:
   type: service
   owner: development
