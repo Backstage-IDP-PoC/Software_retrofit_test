@@ -69,7 +69,7 @@ spec:
       name: Push Kubernetes manifests
       action: publish:github
       input:
-        repoUrl: github.com?owner=Backstage-IDP-PoC&repo=k8s-manifests
+        repoUrl: github.com?owner=Backstage-IDP-PoC&repo=k8s-manifest
         defaultBranch: main
         sourcePath: ./manifest-templates
         targetPath: apps/${{ parameters.component_id }}
