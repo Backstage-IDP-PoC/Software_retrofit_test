@@ -61,10 +61,8 @@ spec:
         repoUrl: ${{ parameters.repoUrl | parseRepoUrl }}
         defaultBranch: main
         sourcePath: ./
-        targetPath: ./
-        commitMessage: "Add Jenkins + ArgoCD CI/CD via Backstage"
 
-    # ✅ 3. Create GitOps Manifests (DIRECT PUSH)
+    # ✅ 3. Create GitOps Manifests
     - id: push-k8s-manifest
       name: Push Kubernetes manifests
       action: publish:github
@@ -72,8 +70,6 @@ spec:
         repoUrl: github.com?owner=Backstage-IDP-PoC&repo=k8s-manifest
         defaultBranch: main
         sourcePath: ./manifest-templates
-        targetPath: apps/${{ parameters.component_id }}
-        commitMessage: "Add manifests for ${{ parameters.component_id }}"
 
   output:
     links:
