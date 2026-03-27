@@ -62,6 +62,7 @@ spec:
         # branchName: main
         # commitMessage: "Add Jenkins + ArgoCD CI/CD via Backstage"
         sourcePath: ./
+        force: true 
 
     # ✅ 3. Push K8s Manifests
     - id: push-k8s-manifest
@@ -73,6 +74,7 @@ spec:
         # commitMessage: "Add manifests for ${{ parameters.component_id }}"
         sourcePath: ./manifest-templates
         targetPath: apps/${{ parameters.component_id }}
+        force: true 
 
   output:
     links:
