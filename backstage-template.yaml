@@ -47,15 +47,25 @@ spec:
 
   steps:
 
-    # ✅ 1. Fetch SAME template content
-    - id: fetch-base
-      name: Fetch Template Files
-      action: fetch:template
+    # # ✅ 1. Fetch SAME template content
+    # - id: fetch-base
+    #   name: Fetch Template Files
+    #   action: fetch:template
+    #   input:
+    #     url: ./template
+    #     values:
+    #       app_name: ${{ parameters.component_id }}
+    #       app_env: ${{ parameters.environment }}
+      - id: log
+      name: Repo Selected
+      action: debug:log
       input:
-        url: ./template
-        values:
-          app_name: ${{ parameters.component_id }}
-          app_env: ${{ parameters.environment }}
+        message: "Repository selected: ${{ parameters.repoUrl }}"
+
+output:
+  links:
+    - title: Open Repository
+      url: ${{ parameters.repoUrl }}
 
     # ✅ 2. Inject into EXISTING repo via PR
     - id: inject-ci-cd
