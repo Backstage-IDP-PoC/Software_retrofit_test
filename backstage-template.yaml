@@ -5,7 +5,6 @@ metadata:
   name: retrofit-jenkins-argocd
   title: Integrate CI/CD into Developer's Existing Repository
   description: Integrate CI/CD into Developer's Existing Repository
-
 spec:
   owner: development
   type: service
@@ -48,24 +47,14 @@ spec:
   steps:
 
     # ✅ 1. Fetch SAME template content
-    # - id: fetch-base
-    #   name: Fetch Template Files
-    #   action: fetch:template
-    #   input:
-    #     url: ./template
-    #     values:
-    #       app_name: ${{ parameters.component_id }}
-    #       app_env: ${{ parameters.environment }}
-      - id: log
-        name: Repo Selected
-        action: debug:log
-        input:
-        message: "Repository selected: ${{ parameters.repoUrl }}"
-
-output:
-  links:
-    - title: Open Repository
-      url: ${{ parameters.repoUrl }}
+    - id: fetch-base
+      name: Fetch Template Files
+      action: fetch:template
+      input:
+        url: ./template
+        values:
+          app_name: ${{ parameters.component_id }}
+          app_env: ${{ parameters.environment }}
 
     # ✅ 2. Inject into EXISTING repo via PR
     - id: inject-ci-cd
