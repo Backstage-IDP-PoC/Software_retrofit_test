@@ -41,6 +41,8 @@ spec:
         type: string
         enum:
           - dev
+          - uat
+          - staging
           - prod
 
   steps:
