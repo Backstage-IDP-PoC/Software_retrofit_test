@@ -28,6 +28,8 @@ spec:
               - github.com
             allowedOwners:
               - Backstage-IDP-PoC
+            requestUserCredentials:
+              secretsKey: USER_OAUTH_TOKEN
 
         component_id:
           title: Component Name
