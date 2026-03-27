@@ -3,50 +3,48 @@ kind: Template
 
 metadata:
   name: retrofit-jenkins-argocd
-  title: Integrate CI/CD into Developer's Existing Repository
-  description: Integrate CI/CD into Developer's Existing Repository
+  title: Integrate CI/CD into Existing Repository (No PR)
+  description: Add CI/CD and trigger build & deploy
+
 spec:
   owner: development
   type: service
 
   parameters:
-  - title: Select Existing Repository
-    required:
-      - repoUrl
-      - component_id
-      - environment
+    - title: Select Existing Repository
+      required:
+        - repoUrl
+        - component_id
+        - environment
 
-    properties:
+      properties:
 
-      repoUrl:
-        title: Repository
-        type: string
-        ui:field: RepoUrlPicker
-        ui:options:
-          allowedHosts:
-            - github.com
-          allowedOwners:
-            - Backstage-IDP-PoC
-          # requestUserCredentials:
-          #   secretsKey: USER_OAUTH_TOKEN
+        repoUrl:
+          title: Repository
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+            allowedOwners:
+              - Backstage-IDP-PoC
 
-      component_id:
-        title: Component Name
-        type: string
-        description: Keep same as repo name
+        component_id:
+          title: Component Name
+          type: string
 
-      environment:
-        title: Environment
-        type: string
-        enum:
-          - dev
-          - uat
-          - staging
-          - prod
+        environment:
+          title: Environment
+          type: string
+          enum:
+            - dev
+            - uat
+            - staging
+            - prod
 
   steps:
 
-    # ✅ 1. Fetch SAME template content
+    # ✅ 1. Fetch Template Files
     - id: fetch-base
       name: Fetch Template Files
       action: fetch:template
@@ -56,45 +54,35 @@ spec:
           app_name: ${{ parameters.component_id }}
           app_env: ${{ parameters.environment }}
 
-    # ✅ 2. Inject into EXISTING repo via PR
-    - id: inject-ci-cd
-      name: Inject CI/CD via Pull Request
-      action: publish:github:pull-request
+    # ✅ 2. DIRECT PUSH (NO PR)
+    - id: push-to-repo
+      name: Push CI/CD directly to repo
+      action: publish:github
       input:
         repoUrl: ${{ parameters.repoUrl }}
-        # token: ${{ secrets.USER_OAUTH_TOKEN }}
-        branchName: backstage-integration-${{ parameters.component_id }}
-        title: "Add Jenkins + ArgoCD CI/CD"
-        description: |
-          This PR adds:
-          - Jenkinsfile
-          - Dockerfile
-          - catalog-info.yaml
-          - Kubernetes manifests
-        sourcePath: ./        # fetched files
-        targetPath: ./        # repo root
+        defaultBranch: main
+        sourcePath: ./
+        targetPath: ./
+        commitMessage: "Add Jenkins + ArgoCD CI/CD via Backstage"
 
-    # ✅ 3. Register in Backstage Catalog
-    # - id: register
-    #   name: Register Existing Repo
-    #   action: catalog:register
-    #   input:
-    #     repoContentsUrl: ${{ steps['inject-ci-cd'].output.repoContentsUrl }}
-    #     catalogInfoPath: "/catalog-info.yaml"
-
-    # ✅ 4. Create GitOps PR (REUSE YOUR EXISTING LOGIC)
-    - id: create-k8s-folder
-      name: Create K8s Manifests Folder
-      action: publish:github:pull-request
+    # ✅ 3. Create GitOps Manifests (DIRECT PUSH)
+    - id: push-k8s-manifest
+      name: Push Kubernetes manifests
+      action: publish:github
       input:
         repoUrl: github.com?owner=Backstage-IDP-PoC&repo=k8s-manifests
-        branchName: create-${{ parameters.component_id }}
-        title: "Add artifact for ${{ parameters.component_id }}"
-        description: "This PR creates Kubernetes artifact for ${{ parameters.component_id }}"
+        defaultBranch: main
         sourcePath: ./manifest-templates
         targetPath: apps/${{ parameters.component_id }}
+        commitMessage: "Add manifests for ${{ parameters.component_id }}"
 
   output:
     links:
-      - title: Pull Request
-        url: ${{ steps['inject-ci-cd'].output.remoteUrl }}
+      - title: 🔧 Open Repository
+        url: https://github.com/${{ parameters.repoUrl | parseRepoUrl | pick('owner') }}/${{ parameters.repoUrl | parseRepoUrl | pick('repo') }}
+
+      - title: 🚀 Trigger Jenkins Build
+        url: http://<your-jenkins-url>/job/${{ parameters.component_id }}/build
+
+      - title: 📦 Open ArgoCD App
+        url: http://<your-argocd-url>/applications/${{ parameters.component_id }}
