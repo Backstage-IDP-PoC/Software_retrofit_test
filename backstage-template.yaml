@@ -20,16 +20,13 @@ spec:
       properties:
 
         repoUrl:
-          title: Repository
+          title: Repository URL
           type: string
-          ui:field: RepoUrlPicker
-          ui:options:
-            allowedHosts:
-              - github.com
-            allowedOwners:
-              - Backstage-IDP-PoC
-            requestUserCredentials:
-              secretsKey: USER_OAUTH_TOKEN
+          pattern: ^https://github.com/Backstage-IDP-PoC/[a-zA-Z0-9._-]+$
+          description: |
+            Enter GitHub repo URL from Backstage-IDP-PoC org only.
+            Example:
+            https://github.com/Backstage-IDP-PoC/my-app
 
         component_id:
           title: Component Name
@@ -61,7 +58,7 @@ spec:
       name: Push CI/CD directly to repo
       action: publish:github
       input:
-        repoUrl: ${{ parameters.repoUrl }}
+        repoUrl: ${{ parameters.repoUrl | parseRepoUrl }}
         defaultBranch: main
         sourcePath: ./
         targetPath: ./
@@ -81,10 +78,10 @@ spec:
   output:
     links:
       - title: 🔧 Open Repository
-        url: https://github.com/${{ parameters.repoUrl | parseRepoUrl | pick('owner') }}/${{ parameters.repoUrl | parseRepoUrl | pick('repo') }}
+        url: ${{ parameters.repoUrl }}
 
       - title: 🚀 Trigger Jenkins Build
-        url: http://<your-jenkins-url>/job/${{ parameters.component_id }}/build
+        url: http://35.208.92.122:8080/job/${{ parameters.component_id }}/build
 
       - title: 📦 Open ArgoCD App
-        url: http://<your-argocd-url>/applications/${{ parameters.component_id }}
+        url: https://35.184.124.65/applications/${{ parameters.component_id }}
