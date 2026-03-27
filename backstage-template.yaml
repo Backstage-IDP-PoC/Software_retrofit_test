@@ -3,8 +3,8 @@ kind: Template
 
 metadata:
   name: retrofit-jenkins-argocd
-  title: Integrate CI/CD into Existing Repository (No PR)
-  description: Add CI/CD and trigger build & deploy
+  title: Integrate CI/CD into Developer's Existing Repository
+  description: Run your CI and CD using Developer's own Repo
 
 spec:
   owner: development
