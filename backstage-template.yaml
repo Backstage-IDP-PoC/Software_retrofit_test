@@ -59,21 +59,9 @@ spec:
       action: github:repo:push
       input:
         repoUrl: github.com?owner=Backstage-IDP-PoC&repo=${{ parameters.component_id }}
-        # branchName: main
-        # commitMessage: "Add Jenkins + ArgoCD CI/CD via Backstage"
         sourcePath: ./
-        targetPath: backstage-ci
-        
-    # ✅ 3. Push K8s Manifests
-    - id: push-k8s-manifest
-      name: Push Kubernetes manifests
-      action: github:repo:push
-      input:
-        repoUrl: github.com?owner=Backstage-IDP-PoC&repo=k8s-manifest
-        # branchName: main
-        # commitMessage: "Add manifests for ${{ parameters.component_id }}"
-        sourcePath: ./manifest-templates
-        targetPath: apps/${{ parameters.component_id }}
+
+    # ❌ REMOVED push-k8s-manifest step (not supported in your version)
 
   output:
     links:
