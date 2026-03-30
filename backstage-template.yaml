@@ -43,33 +43,38 @@ spec:
 
   steps:
 
-    # ✅ 1. Fetch Template Files
-    - id: fetch-base
-      name: Fetch Template Files
-      action: fetch:template
-      input:
-        url: ./template
-        values:
-          app_name: ${{ parameters.component_id }}
-          app_env: ${{ parameters.environment }}
+steps:
 
-    # ✅ 2. PUSH TO EXISTING REPO
-    - id: push-to-repo
-      name: Push CI/CD to existing repo
-      action: github:repo:push
-      input:
-        repoUrl: github.com?owner=Backstage-IDP-PoC&repo=${{ parameters.component_id }}
-        sourcePath: ./
+  # ✅ 1. Fetch CI/CD template files
+  - id: fetch-base
+    name: Fetch CI/CD Templates
+    action: fetch:template
+    input:
+      url: ./template
+      values:
+        app_name: ${{ parameters.component_id }}
+        app_env: ${{ parameters.environment }}
 
-    # ❌ REMOVED push-k8s-manifest step (not supported in your version)
+  # ✅ 2. CLONE EXISTING REPO
+  - id: clone
+    name: Clone existing repo
+    action: github:repo:clone
+    input:
+      repoUrl: github.com?owner=Backstage-IDP-PoC&repo=${{ parameters.component_id }}
 
-  output:
-    links:
-      - title: 🔧 Open Repository
-        url: ${{ parameters.repoUrl }}
+  # ✅ 3. MERGE FILES INTO EXISTING REPO
+  - id: merge
+    name: Merge CI/CD into repo
+    action: fs:copy
+    input:
+      sourcePath: ./        # template files
+      targetPath: ${{ steps.clone.output.repoDir }}
 
-      - title: 🚀 Trigger Jenkins Build
-        url: http://35.208.92.122:8080/job/${{ parameters.component_id }}/build
+  # ✅ 4. COMMIT & PUSH
+  - id: push
+    name: Commit and push changes
+    action: github:repo:push
+    input:
+      repoUrl: github.com?owner=Backstage-IDP-PoC&repo=${{ parameters.component_id }}
+      sourcePath: ${{ steps.clone.output.repoDir }}
 
-      - title: 📦 Open ArgoCD App
-        url: https://35.184.124.65/applications/${{ parameters.component_id }}
