@@ -41,8 +41,6 @@ spec:
             - staging
             - prod
 
-  steps:
-
 steps:
 
   # ✅ 1. Fetch CI/CD template files
