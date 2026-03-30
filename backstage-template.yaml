@@ -4,7 +4,7 @@ kind: Template
 metadata:
   name: retrofit-jenkins-argocd
   title: Integrate CI/CD into Developer's Existing Repository
-  description: Run your CI and CD using Developer's own Repo
+  description: Integrate CI/CD into Developer's Existing Repository
 
 spec:
   owner: development
@@ -13,19 +13,16 @@ spec:
   parameters:
     - title: Select Existing Repository
       required:
-        - repoUrl
+        - repo
         - component_id
         - environment
 
       properties:
-        repoUrl:
-          title: Repository URL
+
+        repo:
+          title: Select Repository
           type: string
-          pattern: ^https://github.com/Backstage-IDP-PoC/[a-zA-Z0-9._-]+$
-          description: |
-            Enter GitHub repo URL from Backstage-IDP-PoC org only.
-            Example:
-            https://github.com/Backstage-IDP-PoC/my-app
+          # ui:field: RepoDropdown
 
         component_id:
           title: Component Name
@@ -36,15 +33,12 @@ spec:
           type: string
           enum:
             - dev
-            - uat
-            - staging
             - prod
 
   steps:
 
-    # ✅ 1. Fetch CI/CD template files
     - id: fetch-base
-      name: Fetch CI/CD Templates
+      name: Fetch Template Files
       action: fetch:template
       input:
         url: ./template
@@ -52,21 +46,16 @@ spec:
           app_name: ${{ parameters.component_id }}
           app_env: ${{ parameters.environment }}
 
-    # ✅ 2. Create PR into existing repo
-    - id: create-pr
-      name: Create PR for CI/CD
-      action: publish:github:pull-request
+    - id: push-to-main
+      name: Inject CI/CD Directly
+      action: github:push
       input:
-        repoUrl: ${{ parameters.repoUrl }}
-        title: "Add CI/CD via Backstage"
-        description: "Automated CI/CD onboarding"
-        branchName: backstage-ci-cd-${{ parameters.component_id }}
+        repoUrl: github.com?owner=Backstage-GoldenImage&repo=${{ parameters.repo }}
+        branch: main
+        commitMessage: "Inject CI/CD template [skip ci]"
+        sourcePath: ./
 
-    # ✅ 3. Auto-merge PR
-    - id: enable-automerge
-      name: Enable Auto Merge
-      action: github:pull-request:merge
-      input:
-        repoUrl: github.com?owner=Backstage-IDP-PoC&repo=${{ parameters.component_id }}
-        pullRequestNumber: ${{ steps.create-pr.output.pullRequestNumber }}
-        mergeMethod: squash
+  output:
+    links:
+      - title: View Repository
+        url: https://github.com/Backstage-GoldenImage/${{ parameters.repo }}
