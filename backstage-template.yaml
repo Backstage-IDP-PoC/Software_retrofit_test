@@ -18,7 +18,6 @@ spec:
         - environment
 
       properties:
-
         repoUrl:
           title: Repository URL
           type: string
@@ -41,33 +40,44 @@ spec:
             - staging
             - prod
 
-steps:
+  steps:
 
-  # ✅ 1. Fetch CI/CD template files
-  - id: fetch-base
-    name: Fetch CI/CD Templates
-    action: fetch:template
-    input:
-      url: ./template
-      values:
-        app_name: ${{ parameters.component_id }}
-        app_env: ${{ parameters.environment }}
+    # ✅ 1. Fetch CI/CD template files
+    - id: fetch-base
+      name: Fetch CI/CD Templates
+      action: fetch:template
+      input:
+        url: ./template
+        values:
+          app_name: ${{ parameters.component_id }}
+          app_env: ${{ parameters.environment }}
 
-  # ✅ 2. Create PR into existing repo
-  - id: create-pr
-    name: Create PR for CI/CD
-    action: publish:github:pull-request
-    input:
-      repoUrl: github.com?owner=Backstage-IDP-PoC&repo=${{ parameters.component_id }}
-      title: "Add CI/CD via Backstage"
-      description: "Automated CI/CD onboarding"
-      branchName: backstage-ci-cd-${{ parameters.component_id }}
+    # ✅ 2. Create PR into existing repo
+    - id: create-pr
+      name: Create PR for CI/CD
+      action: publish:github:pull-request
+      input:
+        repoUrl: github.com?owner=Backstage-IDP-PoC&repo=${{ parameters.component_id }}
+        title: "Add CI/CD via Backstage"
+        description: "Automated CI/CD onboarding"
+        branchName: backstage-ci-cd-${{ parameters.component_id }}
 
-  # ✅ 3. Auto-merge PR
-  - id: enable-automerge
-    name: Enable Auto Merge
-    action: github:pull-request:merge
-    input:
-      repoUrl: github.com?owner=Backstage-IDP-PoC&repo=${{ parameters.component_id }}
-      pullRequestNumber: ${{ steps.create-pr.output.pullRequestNumber }}
-      mergeMethod: squash
+    # ✅ 3. Auto-merge PR
+    - id: enable-automerge
+      name: Enable Auto Merge
+      action: github:pull-request:merge
+      input:
+        repoUrl: github.com?owner=Backstage-IDP-PoC&repo=${{ parameters.component_id }}
+        pullRequestNumber: ${{ steps.create-pr.output.pullRequestNumber }}
+        mergeMethod: squash
+
+  output:
+    links:
+      - title: 🔧 Open Repository
+        url: ${{ parameters.repoUrl }}
+
+      - title: 🚀 Trigger Jenkins Build
+        url: http://35.208.92.122:8080/job/${{ parameters.component_id }}/build
+
+      - title: 📦 Open ArgoCD App
+        url: https://35.184.124.65/applications/${{ parameters.component_id }}
