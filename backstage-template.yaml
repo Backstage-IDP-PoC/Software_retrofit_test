@@ -57,7 +57,7 @@ spec:
       name: Create PR for CI/CD
       action: publish:github:pull-request
       input:
-        repoUrl: github.com?owner=Backstage-IDP-PoC&repo=${{ parameters.component_id }}
+        repoUrl: ${{ parameters.repoUrl }}
         title: "Add CI/CD via Backstage"
         description: "Automated CI/CD onboarding"
         branchName: backstage-ci-cd-${{ parameters.component_id }}
@@ -70,14 +70,3 @@ spec:
         repoUrl: github.com?owner=Backstage-IDP-PoC&repo=${{ parameters.component_id }}
         pullRequestNumber: ${{ steps.create-pr.output.pullRequestNumber }}
         mergeMethod: squash
-
-  output:
-    links:
-      - title: 🔧 Open Repository
-        url: ${{ parameters.repoUrl }}
-
-      - title: 🚀 Trigger Jenkins Build
-        url: http://35.208.92.122:8080/job/${{ parameters.component_id }}/build
-
-      - title: 📦 Open ArgoCD App
-        url: https://35.184.124.65/applications/${{ parameters.component_id }}
