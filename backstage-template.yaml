@@ -41,38 +41,37 @@ spec:
             - staging
             - prod
 
-steps:
+  steps:
 
-  # ✅ 1. Fetch CI/CD template files
-  - id: fetch-base
-    name: Fetch CI/CD Templates
-    action: fetch:template
-    input:
-      url: ./template
-      values:
-        app_name: ${{ parameters.component_id }}
-        app_env: ${{ parameters.environment }}
+    # ✅ 1. Fetch CI/CD template files
+    - id: fetch-base
+      name: Fetch CI/CD Templates
+      action: fetch:template
+      input:
+        url: ./template
+        values:
+          app_name: ${{ parameters.component_id }}
+          app_env: ${{ parameters.environment }}
 
-  # ✅ 2. CLONE EXISTING REPO
-  - id: clone
-    name: Clone existing repo
-    action: github:repo:clone
-    input:
-      repoUrl: github.com?owner=Backstage-IDP-PoC&repo=${{ parameters.component_id }}
+    # ✅ 2. CLONE EXISTING REPO
+    - id: clone
+      name: Clone existing repo
+      action: github:repo:clone
+      input:
+        repoUrl: github.com?owner=Backstage-IDP-PoC&repo=${{ parameters.component_id }}
 
-  # ✅ 3. MERGE FILES INTO EXISTING REPO
-  - id: merge
-    name: Merge CI/CD into repo
-    action: fs:copy
-    input:
-      sourcePath: ./        # template files
-      targetPath: ${{ steps.clone.output.repoDir }}
+    # ✅ 3. MERGE FILES INTO EXISTING REPO
+    - id: merge
+      name: Merge CI/CD into repo
+      action: fs:copy
+      input:
+        sourcePath: ./
+        targetPath: ${{ steps.clone.output.repoDir }}
 
-  # ✅ 4. COMMIT & PUSH
-  - id: push
-    name: Commit and push changes
-    action: github:repo:push
-    input:
-      repoUrl: github.com?owner=Backstage-IDP-PoC&repo=${{ parameters.component_id }}
-      sourcePath: ${{ steps.clone.output.repoDir }}
-
+    # ✅ 4. COMMIT & PUSH
+    - id: push
+      name: Commit and push changes
+      action: github:repo:push
+      input:
+        repoUrl: github.com?owner=Backstage-IDP-PoC&repo=${{ parameters.component_id }}
+        sourcePath: ${{ steps.clone.output.repoDir }}
