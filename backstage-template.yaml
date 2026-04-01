@@ -13,6 +13,7 @@ spec:
   parameters:
     - title: Select Existing Repository
       required:
+        - branch
         - repo
         - component_id
         - environment
@@ -23,7 +24,9 @@ spec:
           title: Select Repository
           type: string
           # ui:field: RepoDropdown
-
+        branch:
+          title: Select Branch
+          type: string
         component_id:
           title: Component Name
           type: string
@@ -49,16 +52,17 @@ spec:
           app_name: ${{ parameters.component_id }}
           app_env: ${{ parameters.environment }}
 
-    - id: push-to-main
+    - id: push-to-branch
       name: Onboarding Developer's Repository 
       action: github:push
       input:
         repoUrl: github.com?owner=Backstage-IDP-PoC&repo=${{ parameters.repo }}
-        branch: main
-        commitMessage: "Inject CI/CD template [skip ci]"
+        branch: ${{ parameters.branch }}
+        commitMessage: "Inject CI/CD template"
         sourcePath: ./
 
   output:
     links:
       - title: View Repository
-        url: https://github.com/Backstage-IDP-PoC/${{ parameters.repo }}
+        url: https://github.com/Backstage-IDP-PoC/${{ parameters.repo }}/tree/${{ parameters.branch }}
+    
