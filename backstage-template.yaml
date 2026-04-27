@@ -13,9 +13,9 @@ spec:
   parameters:
     - title: Select Existing Repository
       required:
-        # - branch
-        # - repo
-        # - component_id
+        # - branch #Removed now from UI
+        # - repo #Removed now from UI
+        # - component_id #Removed now from UI
         - environment
 
       properties:
