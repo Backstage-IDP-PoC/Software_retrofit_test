@@ -14,7 +14,7 @@ spec:
     - title: Select Existing Repository
       required:
         - repo 
-        # - component_id #Removed now from UI
+        # - component_id
         - environment
 
       properties:
@@ -41,7 +41,7 @@ spec:
       input:
         url: ./template
         values:
-          app_name: ${{ parameters.component_id }}
+          app_name: ${{ parameters.repo}}
           app_env: ${{ parameters.environment }}
 
     - id: push-to-branch
